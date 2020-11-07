@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
 
 import FormStep from './FormStep.jsx';
 
 import { updateFormData } from '../store/actionCreators';
 
 
-const FormStepsControler = () => {
+const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastStage }) => {
 
   const dispatch = useDispatch();
-
   const formStepInputs = useSelector(state => state.formShape.inputs);
-  // const initialFormData = useSelector(state => state.formData);
-
 
 
   const [formData, setFormData] = useState({
@@ -24,9 +22,6 @@ const FormStepsControler = () => {
     phone: '',
     date: ''
   })
-
-  const [lastStage, setLastStage] = useState(false)
-
 
   const handleChange = (e) => {
     setFormData({
@@ -41,27 +36,68 @@ const FormStepsControler = () => {
 
   }
 
+  const nextOrSendButton = lastStage 
+    ? <button className="btn btn-primary" onClick={handleClick}>wyślij</button>
+    : <button className="btn btn-outline-primary" onClick={goNextCallback}>dalej</button>
 
-  const formSteps = formStepInputs.map((item, index) => <FormStep 
-    key={index}
-    changeCallback={handleChange}
-    inputs={item.names}
-    labels={item.labels}
-    placeholders={item.placeholders}
-  />)
 
-  const nextOrSendButton = lastStage ? 
-    <button className="btn btn-primary" onClick={handleClick}>wyślij</button>
-    : <button className="btn btn-outline-primary">dalej</button>
+    
+  const initialObj = {
+    x: '100%'
+  }
+  const activeObj = {
+    x: '0%'
+  }
+  const previousObj = {
+    x: '-100%'
+  }
 
   return ( 
     <>
       <div className="form-steps-controler">
-        {formSteps}
+
+        <motion.div className="animating-container" 
+          initial={activeObj} 
+          animate={stepState.first ? activeObj : previousObj}>
+
+          <FormStep 
+            changeCallback={handleChange}
+            inputs={formStepInputs[0].names}
+            labels={formStepInputs[0].labels}
+            placeholders={formStepInputs[0].placeholders}
+          />
+
+        </motion.div>
+
+        <motion.div className="animating-container" 
+          initial={stepState.first ? initialObj : activeObj}
+          animate={stepState.second ? activeObj : initialObj}>
+
+          <FormStep 
+            changeCallback={handleChange}
+            inputs={formStepInputs[1].names}
+            labels={formStepInputs[1].labels}
+            placeholders={formStepInputs[1].placeholders}
+          />
+        </motion.div>
+
+        <motion.div className="animating-container" 
+          initial={stepState.first ? initialObj : activeObj}
+          animate={stepState.third ? activeObj : initialObj}>
+
+          <FormStep 
+            changeCallback={handleChange}
+            inputs={formStepInputs[2].names}
+            labels={formStepInputs[2].labels}
+            placeholders={formStepInputs[2].placeholders}
+          />
+        </motion.div>
+
       </div>
       <div className="button-container">
-        <button className="btn btn-outline-warning">cofnij</button>
+        <button className="btn btn-outline-warning" onClick={goBackCallback} disabled={stepState.first ? true : false}>cofnij</button>
         {nextOrSendButton}
+
       </div>
     </>
    );

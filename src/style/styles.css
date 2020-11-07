@@ -32,7 +32,14 @@ div.header-elements-container {
 /* *************************** FORM STEP STYLES ********************* */
 
 div.form-steps-controler {
+  position: relative;
+  height: 200px;
+  width: 500px;
   display: flex;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(241,39,17,1) 0%, rgba(245,175,25,1) 100%);
+  overflow: hidden;
+  
 }
 
 .form-input {
@@ -45,8 +52,12 @@ div.form-steps-controler {
   
 }
 
-/* div.form-step-container {
-} */
+div.form-step-container {
+  padding: 20px 30px;
+}
+div.animating-container {
+  position: absolute;
+}
 
 div.button-container {
   display: flex;
@@ -54,7 +65,7 @@ div.button-container {
 }
 
 div.button-container button {
-  margin: 0 5px;
+  margin: 20px 5px;
 }
 
 
