@@ -3,21 +3,18 @@ import { useSelector } from 'react-redux';
 
 import FormHeaderElement from './FormHeaderElement.jsx';
 
-const FormHeader = () => {
+const FormHeader = ({ stepState }) => {
 
   const stepsNames = useSelector(state => state.formShape.stepsNames)
 
-
-  const formHeaderElements = stepsNames.map((step, index) => <FormHeaderElement
-  key={index}
-  title={step}
-/>)
 
   return ( 
     <>
       <div className="header-container">
         <div className="form-header">
-          {formHeaderElements}
+          <FormHeaderElement title={stepsNames[0]} isActive={stepState.first}/>
+          <FormHeaderElement title={stepsNames[1]} isActive={stepState.second}/>
+          <FormHeaderElement title={stepsNames[2]} isActive={stepState.third}/>
         </div>
       </div>
     </>

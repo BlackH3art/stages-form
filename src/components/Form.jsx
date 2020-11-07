@@ -64,7 +64,7 @@ const Form = () => {
 
           <div className="form-container">
             <form>
-              <FormHeader />
+              <FormHeader stepState={stepState} />
               <FormStepsControler goBackCallback={handleGoBackClick} goNextCallback={handleNextClick} stepState={stepState} lastStage={lastStage} />
             </form>
           </div>

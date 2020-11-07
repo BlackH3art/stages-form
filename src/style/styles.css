@@ -1,3 +1,8 @@
+:root {
+  --red: rgba(241,39,17,1);
+  --orange: rgba(245,175,25,1);
+}
+
 div.form-container {
   width: 50%;
   display: flex;
@@ -13,13 +18,25 @@ div.header-container {
 
 div.form-header {
   display: flex;
-  width: 50%;
+  width: 70%;
   margin-bottom: 50px;
+  justify-content: space-between;
 }
 
 div.form-header-element {
-  flex-grow: 1;
+  width: 30%;
+  border: solid 2px var(--red);
   text-align: center;
+  transform: skew(-15deg);
+  color: #797979;
+  transition: .4s;
+}
+
+div.active {
+  color: #ffffff;
+  border: none;
+  transform: skew(-15deg) scale(1.2);
+  background: linear-gradient(135deg, rgba(241,39,17,1) 0%, rgba(245,175,25,1) 100%);
 
 }
 

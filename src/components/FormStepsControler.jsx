@@ -30,18 +30,18 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
     })
   }
 
-  const handleClick = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     dispatch(updateFormData(formData))
 
   }
 
   const nextOrSendButton = lastStage 
-    ? <button className="btn btn-primary" onClick={handleClick}>wyślij</button>
+    ? <button className="btn btn-primary" onClick={handleSubmit}>wyślij</button>
     : <button className="btn btn-outline-primary" onClick={goNextCallback}>dalej</button>
 
 
-    
+
   const initialObj = {
     x: '100%'
   }
@@ -50,6 +50,17 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
   }
   const previousObj = {
     x: '-100%'
+  }
+
+  const secondStagePosition = () => {
+
+    if(!stepState.second && !stepState.third) {
+      return initialObj;
+    } else if(!stepState.first && !stepState.third) {
+      return activeObj;
+    } else if(!stepState.first && !stepState.second) {
+      return previousObj;
+    }
   }
 
   return ( 
@@ -70,9 +81,10 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
         </motion.div>
 
         <motion.div className="animating-container" 
-          initial={stepState.first ? initialObj : activeObj}
-          animate={stepState.second ? activeObj : initialObj}>
-
+          initial={stepState.first ? initialObj : previousObj}
+          animate={secondStagePosition()}
+          // animate={stepState.second ? activeObj : initialObj}>
+        >
           <FormStep 
             changeCallback={handleChange}
             inputs={formStepInputs[1].names}
