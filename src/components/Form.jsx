@@ -5,6 +5,7 @@ import formStore from '../store';
 
 import FormHeader from './FormHeader.jsx';
 import FormStepsControler from './FormStepsControler.jsx';
+import Header from './Header.jsx';
 
 import '../style/styles.css'
 
@@ -61,6 +62,7 @@ const Form = () => {
     <>
       <Provider store={formStore}>
         <div className="App-header">
+          <Header />
 
           <div className="form-container">
             <form>

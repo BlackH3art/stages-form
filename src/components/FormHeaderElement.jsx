@@ -4,8 +4,6 @@ const FormHeaderElement = ({ title, isActive }) => {
   
   const styles = `form-header-element ${isActive ? 'active' : ''}`
 
-  console.log(isActive);
-
   return ( 
     <>
       <div className={styles}>
