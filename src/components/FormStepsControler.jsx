@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import FormStep from './FormStep.jsx';
 
@@ -12,7 +12,7 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
   const dispatch = useDispatch();
   const formStepInputs = useSelector(state => state.formShape.inputs);
 
-
+  const [goBack, setGoBack] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -36,78 +36,88 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
 
   }
 
+  const handleGoBack = (e) => {
+    setGoBack(true);
+    goBackCallback(e);
+  }
+
+  const handleGoNext = (e) => {
+    setGoBack(false);
+    goNextCallback(e)
+  }
+
   const nextOrSendButton = lastStage 
     ? <button className="btn btn-primary" onClick={handleSubmit}>wyślij</button>
-    : <button className="btn btn-outline-primary" onClick={goNextCallback}>dalej</button>
+    : <button className="btn btn-outline-primary" onClick={handleGoNext}>dalej</button>
 
 
 
   const initialObj = {
-    x: '100%'
+    x: '100%',
   }
   const activeObj = {
-    x: '0%'
+    x: '0%',
   }
   const previousObj = {
-    x: '-100%'
-  }
-
-  const secondStagePosition = () => {
-
-    if(!stepState.second && !stepState.third) {
-      return initialObj;
-    } else if(!stepState.first && !stepState.third) {
-      return activeObj;
-    } else if(!stepState.first && !stepState.second) {
-      return previousObj;
-    }
+    x: '-100%',
   }
 
   return ( 
     <>
       <div className="form-steps-controler">
 
-        <motion.div className="animating-container" 
-          initial={activeObj} 
-          animate={stepState.first ? activeObj : previousObj}>
+        <AnimatePresence>
 
-          <FormStep 
-            changeCallback={handleChange}
-            inputs={formStepInputs[0].names}
-            labels={formStepInputs[0].labels}
-            placeholders={formStepInputs[0].placeholders}
-          />
+          {stepState.first && <motion.div className="animating-container" 
+            key="first-step"
+            initial={goBack ? previousObj : initialObj} 
+            animate={activeObj}
+            exit={previousObj}
+            >
 
-        </motion.div>
+            <FormStep 
+              changeCallback={handleChange}
+              inputs={formStepInputs[0].names}
+              labels={formStepInputs[0].labels}
+              placeholders={formStepInputs[0].placeholders}
+            />
 
-        <motion.div className="animating-container" 
-          initial={stepState.first ? initialObj : previousObj}
-          animate={secondStagePosition()}
-          // animate={stepState.second ? activeObj : initialObj}>
-        >
-          <FormStep 
-            changeCallback={handleChange}
-            inputs={formStepInputs[1].names}
-            labels={formStepInputs[1].labels}
-            placeholders={formStepInputs[1].placeholders}
-          />
-        </motion.div>
+          </motion.div>}
 
-        <motion.div className="animating-container" 
-          initial={stepState.first ? initialObj : activeObj}
-          animate={stepState.third ? activeObj : initialObj}>
+          {stepState.second && <motion.div className="animating-container" 
+            key="second-step"
+            initial={goBack ? previousObj : initialObj}
+            animate={activeObj}
+            exit={goBack ? initialObj : previousObj}            
+          >
+            <FormStep 
+              changeCallback={handleChange}
+              inputs={formStepInputs[1].names}
+              labels={formStepInputs[1].labels}
+              placeholders={formStepInputs[1].placeholders}
+            />
+          </motion.div>}
 
-          <FormStep 
-            changeCallback={handleChange}
-            inputs={formStepInputs[2].names}
-            labels={formStepInputs[2].labels}
-            placeholders={formStepInputs[2].placeholders}
-          />
-        </motion.div>
+          {stepState.third && <motion.div className="animating-container" 
+            key="third-step"
+            initial={initialObj}
+            animate={activeObj}
+            exit={initialObj}
+            >
+
+            <FormStep 
+              changeCallback={handleChange}
+              inputs={formStepInputs[2].names}
+              labels={formStepInputs[2].labels}
+              placeholders={formStepInputs[2].placeholders}
+            />
+          </motion.div>}
+
+        </AnimatePresence>
 
       </div>
       <div className="button-container">
-        <button className="btn btn-outline-warning" onClick={goBackCallback} disabled={stepState.first ? true : false}>cofnij</button>
+        <button className="btn btn-outline-warning" onClick={handleGoBack} disabled={stepState.first ? true : false}>cofnij</button>
         {nextOrSendButton}
 
       </div>
