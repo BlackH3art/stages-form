@@ -13,7 +13,11 @@ export let validationErrors = {
 
 const validationMiddleware = ({ dispatch, getState}) => next => action => {
   
-    let allErrors = [];
+  let allErrors = [];
+
+  Object.keys(validationErrors).forEach(field => {
+    validationErrors[field].splice(0)
+  })
   
   Object.keys(action.payload).forEach(field => {
     if(validator.isEmpty(action.payload[field])) {
@@ -23,8 +27,6 @@ const validationMiddleware = ({ dispatch, getState}) => next => action => {
     } 
 
   })
-
-  console.log(allErrors.length);
   
   if (allErrors.length === 0) {
     next(action)

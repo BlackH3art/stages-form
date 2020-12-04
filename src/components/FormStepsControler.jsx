@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import FormStep from './FormStep.jsx';
 
 import { updateFormData } from '../store/actionCreators';
+import { validationErrors } from '../store/validationMiddleware';
 
 
 const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastStage }) => {
@@ -22,6 +23,20 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
     phone: '',
     date: ''
   })
+
+  const { name, surname, email, height, weight, phone, date } = validationErrors;
+
+  const [ firstStepErrors, setFirstStepErrors ] = useState([])
+  const [ secondStepErrors, setSecondStepErrors ] = useState([])
+  const [ thirdStepErrors, setThirdStepErrors ] = useState([])
+
+
+  useEffect(() => {
+    setFirstStepErrors([name, surname, email]);
+    setSecondStepErrors([height, weight]);
+    setThirdStepErrors([phone, date]);
+  }, [name, surname, email, height, weight, phone, date])
+
 
   const handleChange = (e) => {
     setFormData({
@@ -41,9 +56,34 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
     goBackCallback(e);
   }
 
+// console.log(firstStepErrors[0].length);
+
   const handleGoNext = (e) => {
+    dispatch(updateFormData(formData))
+
+    e.preventDefault();
     setGoBack(false);
-    goNextCallback(e)
+    if (stepState.first) {
+      console.log(firstStepErrors);
+      if (firstStepErrors[0].length === 0 && firstStepErrors[1].length === 0 && firstStepErrors[2].length === 0) {
+        console.log('first step go next');
+        goNextCallback(e);
+      }
+    } else if (stepState.second) {
+      console.log(secondStepErrors);
+      if (secondStepErrors[3].length === 0 && secondStepErrors[4].length === 0) {
+        console.log('secend step go next');
+        goNextCallback(e);
+      }
+    } else if (stepState.third) {
+      if (thirdStepErrors[5].length === 0 && thirdStepErrors[6].length === 0) {
+        console.log('third step go next');
+        goNextCallback(e);
+      } 
+    } else {
+      return
+    }
+    
   }
 
   const nextOrSendButton = lastStage 
@@ -80,6 +120,7 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
               inputs={formStepInputs[0].names}
               labels={formStepInputs[0].labels}
               placeholders={formStepInputs[0].placeholders}
+              errors={firstStepErrors}
             />
 
           </motion.div>}
@@ -95,6 +136,7 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
               inputs={formStepInputs[1].names}
               labels={formStepInputs[1].labels}
               placeholders={formStepInputs[1].placeholders}
+              errors={secondStepErrors}
             />
           </motion.div>}
 
@@ -110,6 +152,7 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
               inputs={formStepInputs[2].names}
               labels={formStepInputs[2].labels}
               placeholders={formStepInputs[2].placeholders}
+              errors={thirdStepErrors}
             />
           </motion.div>}
 

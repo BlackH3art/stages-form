@@ -2,16 +2,20 @@ import React from 'react';
 
 import FormInputComponent from './FormInputComponent.jsx';
 
-const FormStep = ({ changeCallback, inputs, labels, placeholders}) => {
+const FormStep = ({ changeCallback, inputs, labels, placeholders, errors}) => {
 
 
-  const inputComponents = inputs.map((item, index) => <FormInputComponent 
+  const inputComponents = inputs.map((item, index) => {
+  
+
+  return (<FormInputComponent 
     key={index}
     changeCallback={changeCallback}
     name={item}
     label={labels[index]}
     placeholder={placeholders[index]}
-  />)
+    errors={errors[index]}
+  />) })
 
   return ( 
     <>
