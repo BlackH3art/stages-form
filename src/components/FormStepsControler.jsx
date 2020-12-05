@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,29 +24,54 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
     date: ''
   })
 
-  const { name, surname, email, height, weight, phone, date } = validationErrors;
+  const [firstStepData, setFirstStepData] = useState({
+    name: '',
+    surname: '',
+    email: ''
+  })
+  const [secondStepData, setSecondStepData] = useState({
+    height: '',
+    weight: ''
+  })
+  const [thirdStepData, setThirdStepData] = useState({
+    phone: '',
+    date: ''
+  })
 
-  const [ firstStepErrors, setFirstStepErrors ] = useState([])
-  const [ secondStepErrors, setSecondStepErrors ] = useState([])
-  const [ thirdStepErrors, setThirdStepErrors ] = useState([])
+  const [errorsObject] = useState(validationErrors)
 
 
-  useEffect(() => {
-    setFirstStepErrors([name, surname, email]);
-    setSecondStepErrors([height, weight]);
-    setThirdStepErrors([phone, date]);
-  }, [name, surname, email, height, weight, phone, date])
+  const { name, surname, email, height, weight, phone, date } = errorsObject;
 
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
-    })
+    });
+
+    if (stepState.first) {
+      setFirstStepData({
+        ...firstStepData,
+        [e.target.name]: e.target.value
+      })
+    } else if (stepState.second) {
+      setSecondStepData({
+        ...secondStepData,
+        [e.target.name]: e.target.value
+      })
+    } else if (stepState.third) {
+      setThirdStepData({
+        ...thirdStepData,
+        [e.target.name]: e.target.value
+      })
+    }
+
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     dispatch(updateFormData(formData))
 
   }
@@ -56,28 +81,31 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
     goBackCallback(e);
   }
 
-// console.log(firstStepErrors[0].length);
 
   const handleGoNext = (e) => {
-    dispatch(updateFormData(formData))
+
+    if (stepState.first) {
+      dispatch(updateFormData(firstStepData))
+    } else if (stepState.second) {
+      dispatch(updateFormData(secondStepData))
+    } else if (stepState.third) {
+      dispatch(updateFormData(thirdStepData))
+    }
 
     e.preventDefault();
+
     setGoBack(false);
+
     if (stepState.first) {
-      console.log(firstStepErrors);
-      if (firstStepErrors[0].length === 0 && firstStepErrors[1].length === 0 && firstStepErrors[2].length === 0) {
-        console.log('first step go next');
+      if (name.length === 0 && surname.length === 0 && email.length === 0) {
         goNextCallback(e);
       }
     } else if (stepState.second) {
-      console.log(secondStepErrors);
-      if (secondStepErrors[3].length === 0 && secondStepErrors[4].length === 0) {
-        console.log('secend step go next');
+      if (height.length === 0 && weight.length === 0) {
         goNextCallback(e);
       }
     } else if (stepState.third) {
-      if (thirdStepErrors[5].length === 0 && thirdStepErrors[6].length === 0) {
-        console.log('third step go next');
+      if (phone.length === 0 && date.length === 0) {
         goNextCallback(e);
       } 
     } else {
@@ -120,7 +148,7 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
               inputs={formStepInputs[0].names}
               labels={formStepInputs[0].labels}
               placeholders={formStepInputs[0].placeholders}
-              errors={firstStepErrors}
+              errors={errorsObject}
             />
 
           </motion.div>}
@@ -136,7 +164,7 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
               inputs={formStepInputs[1].names}
               labels={formStepInputs[1].labels}
               placeholders={formStepInputs[1].placeholders}
-              errors={secondStepErrors}
+              errors={errorsObject}
             />
           </motion.div>}
 
@@ -152,7 +180,7 @@ const FormStepsControler = ({ goBackCallback, goNextCallback, stepState, lastSta
               inputs={formStepInputs[2].names}
               labels={formStepInputs[2].labels}
               placeholders={formStepInputs[2].placeholders}
-              errors={thirdStepErrors}
+              errors={errorsObject}
             />
           </motion.div>}
 

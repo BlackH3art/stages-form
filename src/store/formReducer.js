@@ -8,7 +8,10 @@ export default function formReducer(storeData, action) {
     case SENDDATA: 
       return {
         ...storeData,
-        formData: action.payload
+        formData: {
+          ...storeData.formData,
+          ...action.payload
+        }
       };
 
     default:

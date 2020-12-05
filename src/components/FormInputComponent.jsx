@@ -1,15 +1,16 @@
 import React from 'react';
 
-const FormInputComponent = ({ changeCallback, name, label, placeholder, errors}) => {
+import { motion } from 'framer-motion'
 
+const FormInputComponent = ({ changeCallback, name, label, placeholder, error}) => {
 
   return ( 
     <>
       <div className="input-container">
-        <label htmlFor={name}>
+        <motion.label layout htmlFor={name}>
           {label}
-          <p className="error">{errors}</p>
-        </label>
+          {error.length === 1 ? <motion.p layout className="error">{error[0]}</motion.p> : null}
+        </motion.label>
         <input className="form-input" name={name} type="text" placeholder={placeholder} onChange={changeCallback}/>
       </div>
     </>

@@ -14,7 +14,7 @@ const FormStep = ({ changeCallback, inputs, labels, placeholders, errors}) => {
     name={item}
     label={labels[index]}
     placeholder={placeholders[index]}
-    errors={errors[index]}
+    error={errors[item]}
   />) })
 
   return ( 
